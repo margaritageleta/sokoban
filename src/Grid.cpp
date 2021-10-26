@@ -61,6 +61,6 @@ void Grid::printGrid(){
             else if (e == 4) cout << "🧚";
             else cout << "⬛️";
         }
-        std::cout << std::endl;
+        cout << endl;
     }
 }

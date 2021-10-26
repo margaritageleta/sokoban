@@ -12,14 +12,10 @@ typedef vector<vector<int>> matrix;
 std::istringstream nextLine(ifstream &infile, string line);
 
 int main (int argc, char** argv) {
-   cout << "Good evening." << endl;
 
-   // Read input file:
-   std::ifstream infile (argv[1]);
-
-   // Def variables:
-   int sizeH, sizeV;
    
+   std::ifstream infile (argv[1]);
+   int sizeH, sizeV;
    string line;
    istringstream iss;
 
