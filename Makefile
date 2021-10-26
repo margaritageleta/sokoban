@@ -1,15 +1,31 @@
-COMPILER = g++
-CPPFLAGS  = -g -Wall -std=c++11
-
+CXX = g++
+CXXFLAGS  = -g -Wall -std=c++11
 
 # Build target.
-TARGET = ./src/sokoban
+SRC_FOLDER = ./src
+BIN_FOLDER = ./bin
+BIN = sokoban.bin
+# List of all .cpp source files.
+SRCS =  $(shell find $(SRC_FOLDER) -type f -name *.cpp)
+# All .o files go to build dir.
+OBJ = $(patsubst $(SRC_FOLDER)/%,$(BIN_FOLDER)/%,$(SRCS:.cpp=.o))
 
 # BEGIN MAKE
-all: $(TARGET)
+all: $(BIN)
 
-$(TARGET): $(TARGET).cpp
-	$(COMPILER) $(CPPFLAGS) -O1 -o $(TARGET).bin $(TARGET).cpp
+# Default target named after the binary.
+# Create build directories - same structure as sources.
+# Link all the object files.
+$(BIN): $(OBJ)
+	@echo "CPP files: $(SRCS)"
+	@echo "OBJ files: $(OBJ)"
+	$(CXX) $(CXXFLAGS) $^ -o $@
 
+# Build target for every single object file.
+$(BIN_FOLDER)/%.o: $(SRC_FOLDER)/%.cpp
+	mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# This should remove all generated files.	
 clean:
-	$(RM) $(TARGET)
+	$(RM) $(BIN_FOLDER)/$(BIN) $(OBJ) $(DEP)
