@@ -34,7 +34,7 @@ int main (int argc, char** argv) {
          cout << "Define grid of size " << sizeH << "x" << sizeV << "." << endl;
          grid = matrix(sizeH, vector<int>(sizeV));
       } // Line 2,3,4: read coord of wall squares, boxes, storage locations.
-      else if (i != 5) {
+      else if (i != 4) {
          cout << "Defining coords." << endl;
          int val;
          iss >> val;
@@ -49,6 +49,7 @@ int main (int argc, char** argv) {
       } // Line 5: player's initial location.
       else {
          iss >> x >> y;
+         x--; y--;
          player = make_pair(x,y);
          grid[x][y] = i;
       }
@@ -57,7 +58,12 @@ int main (int argc, char** argv) {
 
    for (int i = 0; i < sizeH; i++) {
       for (int j = 0; j < sizeV; j++) {
-         std::cout << grid[i][j];
+         int e = grid[i][j];
+         if (e == 1) cout << "🚧";
+         else if (e == 2) cout << "📦";
+         else if (e == 3) cout << "📥";
+         else if (e == 4) cout << "🧚";
+         else cout << "⬛️";
       }
       std::cout << std::endl;
    }
