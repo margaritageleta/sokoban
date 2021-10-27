@@ -10,6 +10,7 @@ typedef pair<int, int> coord2D;
 typedef vector<vector<int>> matrix;
 
 std::istringstream nextLine(ifstream &infile, string line);
+coord2D getXY(istringstream &iss);
 
 int main (int argc, char** argv) {
 
@@ -28,21 +29,21 @@ int main (int argc, char** argv) {
       iss >> nval;
 
       for (int i = 0; i < nval; i++) {
-         grid.addWall(iss);
+         grid.addWall(getXY(iss));
       }
       iss = nextLine(infile, line);
       iss >> nval;
       for (int i = 0; i < nval; i++) {
-         grid.addBox(iss);
+         grid.addBox(getXY(iss));
       }
       iss = nextLine(infile, line);
       iss >> nval;
       for (int i = 0; i < nval; i++) {
-         grid.addStorage(iss);
+         grid.addStorage(getXY(iss));
       }
       iss = nextLine(infile, line);
 
-      grid.setPlayerPosition(iss);
+      grid.setPlayerPosition(getXY(iss));
 
       grid.printGrid();
 
@@ -54,4 +55,11 @@ std::istringstream nextLine(ifstream &infile, string line){
    getline(infile, line);
    istringstream iss(line);
    return iss;
+}
+
+coord2D getXY(istringstream &iss){
+   int x,y;
+   iss >> x >> y;
+   x--; y--;
+   return make_pair(x,y);
 }

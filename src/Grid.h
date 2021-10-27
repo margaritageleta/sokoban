@@ -21,13 +21,13 @@ class Grid {
 
         Grid(int sizeH, int sizeV);
 
-        void addWall(istringstream &iss);
+        void addWall(coord2D coord);
 
-        void addBox(istringstream &iss);
+        void addBox(coord2D coord);
 
-        void addStorage(istringstream &iss);
+        void addStorage(coord2D coord);
 
-        void setPlayerPosition(istringstream &iss);
+        void setPlayerPosition(coord2D coord);
 
         void printGrid();
 

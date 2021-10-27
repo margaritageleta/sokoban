@@ -23,32 +23,24 @@ Grid::Grid(int sizeH, int sizeV) {
     grid = matrix(sizeH, vector<int>(sizeV));
 }
 
-void Grid::addWall(istringstream &iss){
-    iss >> x >> y;
-    x--; y--;
-    nWallSquares.push_back(make_pair(x,y));
-    grid[x][y] = 1;
+void Grid::addWall(coord2D coord){
+    nWallSquares.push_back(coord);
+    grid[coord.first][coord.second] = 1;
 }
 
-void Grid::addBox(istringstream &iss){
-    iss >> x >> y;
-    x--; y--;
-    nBoxes.push_back(make_pair(x,y));
-    grid[x][y] = 2;
+void Grid::addBox(coord2D coord){
+    nBoxes.push_back(coord);
+    grid[coord.first][coord.second] = 2;
 }
 
-void Grid::addStorage(istringstream &iss){
-    iss >> x >> y;
-    x--; y--;
-    nStorageLocations.push_back(make_pair(x,y));
-    grid[x][y] = 3;
+void Grid::addStorage(coord2D coord){
+    nStorageLocations.push_back(coord);
+    grid[coord.first][coord.second] = 3;
 }
 
-void Grid::setPlayerPosition(istringstream &iss){
-    iss >> x >> y;
-    x--; y--;
-    player = make_pair(x,y);
-    grid[x][y] = 4;
+void Grid::setPlayerPosition(coord2D coord){
+   player = coord;
+    grid[coord.first][coord.second] = 4;
 }
 
 void Grid::printGrid(){
