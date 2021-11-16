@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include "Grid.h"
+#include "Controller.h"
 
 using namespace std;
 typedef pair<int, int> coord2D;
@@ -47,7 +48,16 @@ int main (int argc, char** argv) {
 
       grid.printGrid();
 
+      Controller controller(grid);
+
+      controller.prune();
+
    }
+
+   
+
+
+
 
 }
 
