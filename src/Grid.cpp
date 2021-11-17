@@ -21,7 +21,7 @@ map<string, int> tile = {
 };
 
 matrix grid;
-vector<coord2D> nWallSquares, nBoxes, nStorageLocations;
+vector <coord2D> nWallSquares, nBoxes, nStorageLocations;
 coord2D player;
 int sizeH, sizeV, x, y;
 
@@ -49,7 +49,7 @@ void Grid::addStorage(coord2D coord){
 }
 
 void Grid::setPlayerPosition(coord2D coord){
-   player = coord;
+    player = coord;
     grid[coord.first][coord.second] = tile["PLAYER"];
 }
 
@@ -82,6 +82,13 @@ bool Grid::isWall(int i, int j) {
     return (grid[i][j] == tile["WALL"]) || (grid[i][j] == tile["NEW_WALL"]);
 }
 
+bool Grid::isWall(coord2D coord) {
+    return (grid[coord.first][coord.second] == tile["WALL"]) || (grid[coord.first][coord.second] == tile["NEW_WALL"]);
+}
+bool Grid::isBox(coord2D coord) {
+    return (grid[coord.first][coord.second] == tile["BOX"]);
+}
+
 bool Grid::thereIsWayOut(int i, int j){
     return ! (isWall(i-1,j) && isWall(i+1,j) && isWall(i,j-1) && isWall(i,j+1));
 }
@@ -92,6 +99,23 @@ coord2D Grid::getDoor(int i, int j){
     else if (!isWall(i, j-1)) return make_pair(i, j-1);
     else if (!isWall(i, j+1)) return make_pair(i, j+1);
     else throw std::invalid_argument( "There is no door" );
+}
+
+void Grid::moveBox(coord2D from, coord2D to){
+    for (int i = 0; i < nBoxes.size(); i++){
+        if (nBoxes[i] == from){
+            nBoxes[i] = to;
+            break;
+        } 
+    }
+    grid[from.first][from.second] = tile["VOID"];
+    grid[to.first][to.second] = tile["BOX"];
+
+}
+void Grid::movePlayer(coord2D from, coord2D to){
+    player = to;
+    grid[from.first][from.second] = tile["VOID"];
+    grid[to.first][to.second] = tile["PLAYER"];
 }
 
 

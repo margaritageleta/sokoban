@@ -6,6 +6,7 @@
 #include <sstream> 
 #include <fstream>
 #include <string>
+#include <list>
 
 using namespace std;
 
@@ -15,7 +16,7 @@ typedef vector<vector<int>> matrix;
 class Grid {
     public:
         matrix grid;
-        vector<coord2D> nWallSquares, nBoxes, nStorageLocations;
+        vector <coord2D> nWallSquares, nBoxes, nStorageLocations;
         coord2D player;
         int sizeH, sizeV, x, y;
 
@@ -36,10 +37,18 @@ class Grid {
         void toWall(int i, int j);
 
         bool isWall(int i, int j);
+        
+        bool isWall(coord2D coord);
+
+        bool isBox(coord2D coord);
 
         coord2D getDoor(int i, int j);
 
         bool thereIsWayOut(int i, int j);
+
+        void moveBox(coord2D from, coord2D to);
+
+        void movePlayer(coord2D from, coord2D to);
 
 };
 
