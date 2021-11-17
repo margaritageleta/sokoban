@@ -19,6 +19,7 @@ class Controller {
     Grid grid;
     Controller(Grid grid);
     void prune();
+    void pruneHallway(int i, int j);
     
     
 };

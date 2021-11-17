@@ -18,12 +18,19 @@ void Controller::prune(){
         for(int j = 0; j<grid.sizeV;j++){
             if (grid.isTrap(i,j)){
                grid.toWall(i,j);
-               if(grid.thereIsWayOut(i,j)){
+               pruneHallway(i,j);
+            }
+        }
+    }
+    grid.printGrid();
+}
+
+void Controller::pruneHallway(int i, int j){
+    if(grid.thereIsWayOut(i,j)){
                    int k = i; int l = j;
                    coord2D door = grid.getDoor(i,j);
                    k = door.first; l = door.second;
                    while(grid.isTrap(k,l)){
-                       grid.printGrid();
                        grid.toWall(k,l);
                        if(grid.thereIsWayOut(k,l)){
                            coord2D door = grid.getDoor(k,l);
@@ -32,10 +39,5 @@ void Controller::prune(){
                    }
                    
                }
-               
-            }
-        }
-    }
-    grid.printGrid();
 }
 
