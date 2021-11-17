@@ -28,4 +28,4 @@ $(BIN_FOLDER)/%.o: $(SRC_FOLDER)/%.cpp
 
 # This should remove all generated files.	
 clean:
-	$(RM) $(BIN_FOLDER)/$(BIN) $(OBJ) $(DEP)
+	$(RM) $(BIN_FOLDER)/$(BIN) $(OBJ)
