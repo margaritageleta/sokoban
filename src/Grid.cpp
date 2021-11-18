@@ -13,11 +13,13 @@ typedef pair<int, int> coord2D;
 typedef vector<vector<int>> matrix;
 map<string, int> tile = {
     {"WALL", -1},
+    {"VOID", 0},
     {"NEW_WALL", 1},
     {"BOX", 2},
     {"STORAGE", 3},
     {"PLAYER", 4},
-    {"VOID", 0}
+    {"PLAYERNSTG", 5},
+    {"BOXNSTG", 6}
 };
 
 matrix grid;
@@ -62,6 +64,8 @@ void Grid::printGrid(){
             else if (e == tile["BOX"]) cout << "📦";
             else if (e == tile["STORAGE"]) cout << "📥";
             else if (e == tile["PLAYER"]) cout << "🧚";
+            else if (e == tile["PLAYERNSTG"]) cout << "🛌";
+            else if (e == tile["BOXNSTG"]) cout << "🎁";
             else cout << "⬛️";
         }
         cout << endl;
@@ -86,7 +90,19 @@ bool Grid::isWall(coord2D coord) {
     return (grid[coord.first][coord.second] == tile["WALL"]) || (grid[coord.first][coord.second] == tile["NEW_WALL"]);
 }
 bool Grid::isBox(coord2D coord) {
-    return (grid[coord.first][coord.second] == tile["BOX"]);
+    return (grid[coord.first][coord.second] == tile["BOX"]) || (grid[coord.first][coord.second] == tile["BOXNSTG"]);
+}
+
+bool Grid::isBoxInFreeCorner(coord2D coord) {
+    if (!isBox(coord)) return false;
+    int i = coord.first; 
+    int j = coord.second;
+    return ((!(grid[i][j] == tile["BOXNSTG"])) && ((isWall(i-1,j) + isWall(i+1,j) + isWall(i,j-1) + isWall(i,j+1)) >=2));
+}
+
+bool Grid::isBoxInStorage(coord2D coord){
+    if (!isBox(coord)) return false;
+    return grid[coord.first][coord.second] == tile["BOXNSTG"];
 }
 
 bool Grid::thereIsWayOut(int i, int j){
@@ -108,14 +124,22 @@ void Grid::moveBox(coord2D from, coord2D to){
             break;
         } 
     }
-    grid[from.first][from.second] = tile["VOID"];
-    grid[to.first][to.second] = tile["BOX"];
-
+    
+    if (grid[from.first][from.second] == tile["BOXNSTG"]) grid[from.first][from.second] = tile["STORAGE"];
+    else grid[from.first][from.second] = tile["VOID"];
+    
+    if (grid[to.first][to.second] == tile["STORAGE"]) grid[to.first][to.second] = tile["BOXNSTG"];
+    else grid[to.first][to.second] = tile["BOX"];
+    
 }
 void Grid::movePlayer(coord2D from, coord2D to){
     player = to;
-    grid[from.first][from.second] = tile["VOID"];
-    grid[to.first][to.second] = tile["PLAYER"];
+
+    if (grid[from.first][from.second] == tile["PLAYERNSTG"]) grid[from.first][from.second] = tile["STORAGE"];
+    else grid[from.first][from.second] = tile["VOID"];
+    
+    if (grid[to.first][to.second] == tile["STORAGE"]) grid[to.first][to.second] = tile["PLAYERNSTG"];
+    else grid[to.first][to.second] = tile["PLAYER"];
 }
 
 

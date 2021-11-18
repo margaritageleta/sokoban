@@ -1,17 +1,15 @@
 #include "Action.h"
-#include <list>
 #include "State.h"
 
 using namespace std;
 typedef pair<int, int> coord2D;
 
-list<State> Action:: getNextStates(State state) {
-    list <State> states;
+vector<State> Action:: getNextStates(State state) {
+    vector <State> states;
     states.push_back(getState(state,*moveRight));
     states.push_back(getState(state,*moveLeft));
     states.push_back(getState(state,*moveUp));
     states.push_back(getState(state,*moveDown));
-
     return states;
 }
 

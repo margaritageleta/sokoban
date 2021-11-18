@@ -15,17 +15,19 @@ double Heuristic::getValue(State state, const int p) {
     double smallestDist2Box = double(numeric_limits<int>::max());
     double totalDistBoxStorage = 0;
 
-    for (auto & box : state.nBoxes) {
-        double currDist = Heuristic::computeMinkowskiDistance(box, state.player, p);
+    for (auto & box : state.nBoxes) { 
+        if (state.isBoxInStorage(box)) continue;
+        double currDist = Heuristic::computeMinkowskiDistance(box, state.player, p); // Heuristic 1
         if (smallestDist2Box > currDist) smallestDist2Box = currDist;
 
         int nStorage = 0;
         for (auto & storage : state.nStorageLocations) {
-           totalDistBoxStorage +=  Heuristic::computeMinkowskiDistance(box, storage, p);
+           totalDistBoxStorage +=  Heuristic::computeMinkowskiDistance(box, storage, p); // Heuristic 2
            nStorage++;
         }
         totalDistBoxStorage /= nStorage;
     }
-    return smallestDist2Box + totalDistBoxStorage;
+    return 0.2 * smallestDist2Box + 0.8 * totalDistBoxStorage;
 
 }
+

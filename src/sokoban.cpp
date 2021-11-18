@@ -4,7 +4,10 @@
 #include <fstream>
 #include <string>
 #include "Grid.h"
+#include "State.h"
 #include "Controller.h"
+#include "Action.h"
+#include "Algorithms.h"
 
 using namespace std;
 typedef pair<int, int> coord2D;
@@ -52,13 +55,18 @@ int main (int argc, char** argv) {
 
       controller.prune();
 
+      State solution = static_cast<State&>(controller.grid);
+      solution = State::create(solution, nullptr);
+      
+      solution = Algorithms::AStar(solution);
+      
+      while (true){
+         solution.printGrid();
+         solution = *solution.parent;
+         if (solution.parent) break;
+      }
+
    }
-
-   
-
-
-
-
 }
 
 std::istringstream nextLine(ifstream &infile, string line){
