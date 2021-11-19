@@ -18,7 +18,7 @@ bool PriorityQueue::empty(){
 }
 
 void PriorityQueue::lazyRemoval(State state){
-    priority_queue<State, std::vector<State>, SmallerCost> pq2;
+    priority_queue<State, std::vector<State>, GreaterCost> pq2;
     while (!pq.empty()){
         State s = pq.top();
         pq.pop();

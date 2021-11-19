@@ -12,11 +12,13 @@ class State: public Grid{
     public:
     State *parent;
     int cost;
-    
 
     int G;
 
+    State(Grid grid):Grid(grid) { };
+    State()=default;
     static State create(State state, State *parent);
+
     string getId();
 
     int getH();

@@ -7,13 +7,13 @@ using namespace std;
 
 class PriorityQueue {
     public:
-    struct SmallerCost{
+    struct GreaterCost{
         bool operator()(State& state1, State& state2){
-            return state1.G + state1.getH() < state2.G + state2.getH();
+            return (state1.G + state1.getH()) > (state2.G + state2.getH());
         }
     };
 
-    priority_queue<State, std::vector<State>, SmallerCost> pq;
+    priority_queue<State, std::vector<State>, GreaterCost> pq;
     
     PriorityQueue();
     State pop();

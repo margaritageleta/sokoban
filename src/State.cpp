@@ -57,8 +57,7 @@ bool State::isGoal(){
 }
 
 bool State::isInitialState(){
-    if(parent) return false;
-    return true;
+    return !parent;
 }
 
 

@@ -56,22 +56,23 @@ int main (int argc, char** argv) {
       std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
       controller.prune();
       
-      State solution = static_cast<State&>(controller.grid);
+      State solution = State(controller.grid);
       solution = State::create(solution, nullptr);
       
       solution = Algorithms::AStar(solution);
+      
       vector<State> moves;
       std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
       cout << "SOLUTION FOUND" << endl;
       cout << "ELAPSED TIME: " << std::chrono::duration_cast<std::chrono::seconds>(end - begin).count() << " seconds"  <<endl;
       cout << "ELAPSED TIME: " << std::chrono::duration_cast<std::chrono::minutes>(end - begin).count() << " minutes"  <<endl;
-
-      while (true){
-         moves.push_back(solution);
-         if (solution.isInitialState()) break;
-         solution = *(solution.parent);
-      }
+      moves.push_back(solution);
       
+      while(!solution.isInitialState()){
+         solution = *(solution.parent);
+         moves.push_back(solution);
+      }
+
       for (int i = moves.size()-1; i >= 0; i--){
          do{cout<<"\nPress enter to see next move\n"<<endl;} while (cin.get() != '\n');
          moves[i].printGrid();

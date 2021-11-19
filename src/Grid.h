@@ -21,6 +21,7 @@ class Grid {
         int sizeH, sizeV, x, y;
 
         Grid(int sizeH, int sizeV);
+
         Grid() = default;
         void addWall(coord2D coord);
 

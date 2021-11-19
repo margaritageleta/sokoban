@@ -28,12 +28,12 @@ coord2D player;
 int sizeH, sizeV, x, y;
 
 
-
 Grid::Grid(int sizeH, int sizeV) {
     this->sizeH = sizeH;
     this->sizeV = sizeV;
     grid = matrix(sizeH, vector<int>(sizeV));
 }
+
 
 void Grid::addWall(coord2D coord){
     nWallSquares.push_back(coord);
