@@ -7,8 +7,19 @@
 State State::create(State state, State *parent){
         state.parent = parent;
         state.cost = 1;
+        if (parent) (*parent).G + state.cost;
+        else state.G = state.cost;
         return state;
 }
+string State::getId(){
+    string id = "";
+    id = id + to_string(player.first) + to_string(player.second);
+    for (coord2D & box : nBoxes){
+            id = id + to_string(box.first) + to_string(box.second);
+    }
+    return id;
+}
+
 
 State State::*parent = nullptr;
 
@@ -17,18 +28,8 @@ int State::getH(){
 }
 
 int State::getCost(){
-    if (parent) return 0;
-    if ((*parent).equals(*this)) cost += 10000000000000000;
-    for (coord2D coord : nBoxes){
-        if(isBoxInFreeCorner(coord)) cost+=10000000000000000;
-    }
+    if (isInitialState()) return 0;
     return cost;
-}
-
-int State::getG(){
-
-    if (parent) return getCost();
-    else return (*parent).getG() + getCost();
 }
 
 bool State::equals(State state){
@@ -52,6 +53,11 @@ bool State::isGoal(){
     for (coord2D & box : nBoxes){
         if(!isBoxInStorage(box)) return false;
     }
+    return true;
+}
+
+bool State::isInitialState(){
+    if(parent) return false;
     return true;
 }
 

@@ -8,8 +8,8 @@ using namespace std;
 class PriorityQueue {
     public:
     struct SmallerCost{
-        bool operator()(State state1, State state2){
-            return state1.getG() + state1.getH() < state2.getG() + state2.getH();
+        bool operator()(State& state1, State& state2){
+            return state1.G + state1.getH() < state2.G + state2.getH();
         }
     };
 

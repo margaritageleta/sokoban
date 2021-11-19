@@ -4,6 +4,8 @@
 #include "State.h"
 #include "Action.h"
 #include "PriorityQueue.h"
+#include <set>
+#include <string>
 
 
 using namespace std;

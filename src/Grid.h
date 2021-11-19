@@ -42,6 +42,10 @@ class Grid {
 
         bool isBox(coord2D coord);
 
+        bool isCorner(coord2D coord);
+
+        bool isAnyBoxInFreeCorner();
+
         bool isBoxInFreeCorner(coord2D coord);
 
         bool isBoxInStorage(coord2D coord);

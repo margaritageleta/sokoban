@@ -93,11 +93,29 @@ bool Grid::isBox(coord2D coord) {
     return (grid[coord.first][coord.second] == tile["BOX"]) || (grid[coord.first][coord.second] == tile["BOXNSTG"]);
 }
 
+bool Grid::isCorner(coord2D coord) { //no tenemos en cuenta esquinas formadas por otras cajas!
+    int i = coord.first; 
+    int j = coord.second;
+    bool a = (isWall(i-1,j) && (isWall(i,j-1) || isWall(i,j+1)));
+    bool b = (isWall(i+1,j) && (isWall(i,j-1) || isWall(i,j+1)));
+    return a || b;
+}
+
+bool Grid::isAnyBoxInFreeCorner(){
+    for (coord2D coord : nBoxes){
+        if(isBoxInFreeCorner(coord)) return true;
+    }
+    return false;
+}
+
+
 bool Grid::isBoxInFreeCorner(coord2D coord) {
     if (!isBox(coord)) return false;
     int i = coord.first; 
     int j = coord.second;
-    return ((!(grid[i][j] == tile["BOXNSTG"])) && ((isWall(i-1,j) + isWall(i+1,j) + isWall(i,j-1) + isWall(i,j+1)) >=2));
+    if (grid[i][j] == tile["BOXNSTG"]) return false;
+    
+    return isCorner(coord);
 }
 
 bool Grid::isBoxInStorage(coord2D coord){
