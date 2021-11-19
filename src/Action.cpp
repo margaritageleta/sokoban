@@ -1,34 +1,34 @@
 #include "Action.h"
-#include "State.h"
 
-using namespace std;
-typedef pair<int, int> coord2D;
+vector<State*> Action:: getNextStates(State* state) {
+    vector <State*> states;
+    const vector<coord2D (*)(coord2D coord)> actions = {moveRight,moveLeft,moveUp,moveDown};
+    State* nextMove;
+    for(auto action: actions){
+        nextMove = new State(state);
+        nextMove->setParent(state);
+        states.push_back(getState(nextMove,action));
+    }
 
-vector<State> Action:: getNextStates(State state) {
-    vector <State> states;
-    states.push_back(getState(state,*moveRight));
-    states.push_back(getState(state,*moveLeft));
-    states.push_back(getState(state,*moveUp));
-    states.push_back(getState(state,*moveDown));
     return states;
 }
 
-State Action::getState(State state, coord2D (*move)(coord2D coord)){
-    coord2D agentPosition = state.player;
+State* Action::getState(State* state, coord2D (*move)(coord2D coord)){
+    coord2D agentPosition = state->player;
     coord2D temptativePosition = move(agentPosition);
-    if (state.isWall(temptativePosition)){
+    if (state->isWall(temptativePosition)){
         return state;
-    } else if (state.isBox(temptativePosition)){
+    } else if (state->isBox(temptativePosition)){
         coord2D temptativeBoxPosition = move(temptativePosition);
-        if (state.isWall(temptativeBoxPosition) || state.isBox(temptativeBoxPosition)){
+        if (state->isWall(temptativeBoxPosition) || state->isBox(temptativeBoxPosition)){
             return state;
         } else {
-            state.moveBox(temptativePosition, temptativeBoxPosition);
-            state.movePlayer(agentPosition,temptativePosition);
+            state->moveBox(temptativePosition, temptativeBoxPosition);
+            state->movePlayer(agentPosition,temptativePosition);
             return state;
         }
     } else {
-        state.movePlayer(agentPosition,temptativePosition);
+        state->movePlayer(agentPosition,temptativePosition);
         return state;
     }
 }

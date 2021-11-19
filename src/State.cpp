@@ -1,16 +1,12 @@
 #include "State.h"
-#include "Grid.h"
-#include "Heuristic.h"
 
 
-
-State State::create(State state, State *parent){
-        state.parent = parent;
-        state.cost = 1;
-        if (parent) (*parent).G + state.cost;
-        else state.G = state.cost;
-        return state;
+void State::setParent(State* parent){
+        this->parent = parent;
+        this->cost = 1;
+        this->G = parent->G + this->cost;
 }
+
 string State::getId(){
     string id = "";
     id = id + to_string(player.first) + to_string(player.second);
@@ -20,11 +16,14 @@ string State::getId(){
     return id;
 }
 
-
-State State::*parent = nullptr;
+State::State(State* s1):Grid(s1){
+    parent = s1->parent;
+    cost = s1->cost;
+    G = s1->G;
+}
 
 int State::getH(){
-    return Heuristic::getValue(*this, 2);
+    return Heuristic::getValue(this, 2);
 }
 
 int State::getCost(){
@@ -32,14 +31,14 @@ int State::getCost(){
     return cost;
 }
 
-bool State::equals(State state){
-    if ((player.first != state.player.first) || (player.second != state.player.second)){
+bool State::equals(State* state){
+    if ((player.first != state->player.first) || (player.second != state->player.second)){
         return false;
     }
     for( int i = 0; i < nBoxes.size(); i++){
         bool found = false;
         for( int j = 0; j < nBoxes.size(); j++){
-            if ((nBoxes[i].first == state.nBoxes[j].first) && (nBoxes[i].second == state.nBoxes[j].second)){
+            if ((nBoxes[i].first == state->nBoxes[j].first) && (nBoxes[i].second == state->nBoxes[j].second)){
                 found = true;
                 break;
             }
@@ -50,7 +49,7 @@ bool State::equals(State state){
 }
 
 bool State::isGoal(){
-    for (coord2D & box : nBoxes){
+    for (coord2D box : nBoxes){
         if(!isBoxInStorage(box)) return false;
     }
     return true;

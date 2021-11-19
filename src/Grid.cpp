@@ -1,10 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <sstream> 
-#include <fstream>
-#include <string>
-#include <map>
-#include <stdexcept>
+
 #include "Grid.h"
 
 using namespace std;
@@ -22,16 +16,22 @@ map<string, int> tile = {
     {"BOXNSTG", 6}
 };
 
-matrix grid;
-vector <coord2D> nWallSquares, nBoxes, nStorageLocations;
-coord2D player;
-int sizeH, sizeV, x, y;
 
 
 Grid::Grid(int sizeH, int sizeV) {
     this->sizeH = sizeH;
     this->sizeV = sizeV;
     grid = matrix(sizeH, vector<int>(sizeV));
+}
+
+Grid::Grid(Grid* g1){
+    grid = g1->grid;
+    nWallSquares = g1->nWallSquares;
+    nBoxes = g1->nBoxes;
+    nStorageLocations = g1->nStorageLocations;
+    player = g1->player;
+    sizeH = g1->sizeH;
+    sizeV = g1->sizeV;
 }
 
 

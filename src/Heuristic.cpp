@@ -1,35 +1,32 @@
-#include <math.h>
-#include <limits>
-
 #include "Heuristic.h"
 #include "State.h"
 
-using namespace std;
+
 
 double Heuristic::computeMinkowskiDistance(coord2D x1, coord2D x2, const int p) {
     return pow(pow(abs(x1.first - x2.first), p) + pow(abs(x1.second - x2.second), p), 1/p);
 }
 
-double Heuristic::getValue(State state, const int p) {
+double Heuristic::getValue(State* state, const int p) {
 
     double smallestDist2Box = double(numeric_limits<int>::max());
     double totalDistBoxStorage = 0;
 
-    for (auto & box : state.nBoxes) { 
-        if (state.isBoxInStorage(box)) continue;
+    for (auto & box : state->nBoxes) { 
+        if (state->isBoxInStorage(box)) continue;
         
-        double currDist = Heuristic::computeMinkowskiDistance(box, state.player, p); // Heuristic 1
+        double currDist = Heuristic::computeMinkowskiDistance(box, state->player, p); // Heuristic 1
         if (smallestDist2Box > currDist) smallestDist2Box = currDist;
 
         int nStorage = 0;
-        for (auto & storage : state.nStorageLocations) {
+        for (auto & storage : state->nStorageLocations) {
            totalDistBoxStorage +=  Heuristic::computeMinkowskiDistance(box, storage, p); // Heuristic 2
            nStorage++;
         }
         totalDistBoxStorage /= nStorage;
     }
     if (double(numeric_limits<int>::max()) == smallestDist2Box) smallestDist2Box = 0;
-    return 10*(smallestDist2Box + totalDistBoxStorage);
+    return 100*(smallestDist2Box + totalDistBoxStorage);
 
 }
 

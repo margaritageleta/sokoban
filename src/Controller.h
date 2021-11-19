@@ -6,8 +6,10 @@
 #include <sstream> 
 #include <fstream>
 #include <string>
-
+#include <chrono>
 #include "Grid.h"
+#include "State.h"
+#include "Algorithms.h"
 
 using namespace std;
 
@@ -16,12 +18,18 @@ typedef vector<vector<int>> matrix;
 
 class Controller {
     public:
-    Grid grid;
-    Controller(Grid grid);
+    Grid* grid=nullptr;
+    State* solution=nullptr;
+    bool loaded;
+    Controller();
+    void loadFile(string inputFile);
+    void solve();
+    void printOptimalSolution();
+    private:
     void prune();
     void pruneHallway(int i, int j);
-    
-    
+    istringstream nextLine(ifstream &infile, string line);
+    coord2D getXY(istringstream &iss);   
 };
 
 #endif

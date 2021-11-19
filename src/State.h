@@ -1,8 +1,8 @@
 #ifndef STATE_H
 #define STATE_H
 
+#include "Heuristic.h"
 #include "Grid.h"
-#include "State.h"
 #include "string"
 
 
@@ -10,14 +10,15 @@ using namespace std;
 
 class State: public Grid{
     public:
-    State *parent;
-    int cost;
+    State* parent=nullptr;
+    int cost = 0;
 
-    int G;
+    int G = 0;
 
-    State(Grid grid):Grid(grid) { };
+    State(Grid* grid):Grid(grid){};
     State()=default;
-    static State create(State state, State *parent);
+    State(State* s1);
+    void setParent(State* parent);
 
     string getId();
 
@@ -25,7 +26,7 @@ class State: public Grid{
 
     int getCost();
 
-    bool equals(State state);
+    bool equals(State* state);
 
     bool isGoal(); 
 

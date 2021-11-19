@@ -6,7 +6,8 @@
 #include <sstream> 
 #include <fstream>
 #include <string>
-#include <list>
+#include <stdexcept>
+#include <map>
 
 using namespace std;
 
@@ -18,10 +19,10 @@ class Grid {
         matrix grid;
         vector <coord2D> nWallSquares, nBoxes, nStorageLocations;
         coord2D player;
-        int sizeH, sizeV, x, y;
+        int sizeH, sizeV;
 
         Grid(int sizeH, int sizeV);
-
+        Grid(Grid* g1);
         Grid() = default;
         void addWall(coord2D coord);
 
