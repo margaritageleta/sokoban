@@ -1,5 +1,6 @@
 CXX = g++
-CXXFLAGS  = -Wall -Wextra -std=c++11 -Ofast -march=native -flto -mtune=native
+#CXXFLAGS  = -Wall -Wextra -std=c++11 -Ofast -march=native -flto -mtune=native
+CXXFLAGS = -Wall -Wextra -std=c++11 -Ofast -march=native -mtune=native -funroll-loops -frename-registers
 DEBUGFLAGS = -g -Og -Wall -Wextra -DDEBUG
 LINKERFLAGS = 
 # Build target.
@@ -30,3 +31,4 @@ $(BIN_FOLDER)/%.o: $(SRC_FOLDER)/%.cpp
 # This should remove all generated files.	
 clean:
 	$(RM) $(BIN_FOLDER)/$(BIN) $(OBJ)
+	$(RM) $(BIN)
