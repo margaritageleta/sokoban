@@ -18,11 +18,12 @@ int main (int argc, char** argv) {
    int j = 0;
    list <coord2D> walls, boxes, storage;
    coord2D player;
+   int sizeH = 0;
 
    if (infile.is_open()){
        while(getline(infile, line)){
            i++;j=1;
-           for (char const &c: line) {
+           for (char c: line) {
                if (c == '#'){
                    walls.push_back(make_pair(i,j));
                } else if(c == '.'){
@@ -34,6 +35,7 @@ int main (int argc, char** argv) {
                }
                j++;
             }
+            if ((j-1)>sizeH) sizeH = j-1;
        }
    }
    string fileName = "sokoban";
@@ -41,7 +43,7 @@ int main (int argc, char** argv) {
 
    ofstream myfile (fileName);
    if (myfile.is_open()){
-        myfile << i << " " << j-1 << " " << endl;
+        myfile << i << " " << sizeH << " " << endl;
 
         myfile << walls.size() << " ";
         for (coord2D const& coord : walls) {
