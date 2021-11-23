@@ -15,16 +15,16 @@ double QLearning::getReward(State* state, Action* action){
         if (nextState->isGoal()) return 100.0;
         if (Heuristic::getValue(state,2,1) > Heuristic::getValue(nextState,2,1)) return 1.0;
         if (Heuristic::getNBoxes(state) > Heuristic::getNBoxes(nextState)) return 2.0;
-        return -1.0;
+        return 0.0;
     }
-    return -2.0;
+    return -1.0;
 }
 
 vector<Action*> QLearning::getValidActions(State* state){
     vector<Action*> validActions;
     for (Move move: allMoves){
         Action* a = new Action(move);
-        if (getReward(state,a) != -2.0) {
+        if (getReward(state,a) != -1.0) {
             validActions.push_back(a);
         }
     }
@@ -94,7 +94,7 @@ bool QLearning::executeEpisode(State* initialState){
         if (currentState->isGoal()) return true;
         chrono::steady_clock::time_point now= chrono::steady_clock::now();
         if (chrono::duration_cast<chrono::milliseconds>(now - begin).count()>=100){
-            currentState->printGrid();
+            //currentState->printGrid();
             return false;
         }
     }
@@ -115,7 +115,7 @@ void QLearning::train(int nEpisodes){
         cout << "RUNNING EPISODE " << i << endl;
         found = executeEpisode(initialState);
         cout << "SOLUTION FOUND " << found << endl;
-        //if (nEpisodes % 10 == 0) normalizeQ();
+        if (nEpisodes % 10 == 0) normalizeQ();
     }
 }
 
