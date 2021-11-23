@@ -14,6 +14,7 @@ vector<State*> Action:: getNextStates(State* state) {
 }
 
 State* Action::getState(State* state, coord2D (*move)(coord2D coord)){
+    state->movedBox = false;
     coord2D agentPosition = state->player;
     coord2D temptativePosition = move(agentPosition);
     if (state->isWall(temptativePosition)){

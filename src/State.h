@@ -12,7 +12,7 @@ class State: public Grid{
     public:
     State* parent=nullptr;
     int cost = 0;
-
+    
     int G = 0;
 
     State(Grid* grid):Grid(grid){};

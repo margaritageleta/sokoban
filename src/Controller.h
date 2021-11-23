@@ -10,6 +10,7 @@
 #include "Grid.h"
 #include "State.h"
 #include "Algorithms.h"
+#include "QLearning.h"
 
 
 using namespace std;
@@ -21,6 +22,7 @@ class Controller {
     public:
     Grid* grid=nullptr;
     State* solution=nullptr;
+    QLearning* ql = nullptr;
     bool loaded;
     Controller();
     void loadFile(string inputFile);

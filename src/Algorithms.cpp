@@ -35,9 +35,9 @@ State* Algorithms::AStar(State* state){
 
 }
 
-State* Algorithms::QLearningAlg(State* state){
+QLearning* Algorithms::QLearningAlg(State* state){
     QLearning* ql = new QLearning(state, 1.0, 0.6, 0.7);
-    ql->train(1000);
-    return nullptr;
+    ql->train();
+    return ql;
 }
 

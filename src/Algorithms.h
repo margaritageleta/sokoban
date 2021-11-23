@@ -19,7 +19,7 @@ typedef pair<int, int> coord2D;
 class Algorithms{
     public:
     static State* AStar(State* state);
-    static State* QLearningAlg(State* state);
+    static QLearning* QLearningAlg(State* state);
 };
 
 #endif

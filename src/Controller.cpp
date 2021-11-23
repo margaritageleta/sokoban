@@ -54,7 +54,7 @@ void Controller::solve(){
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
     solution = new State(grid);
     //solution = Algorithms::AStar(solution);
-    solution = Algorithms::QLearningAlg(solution);
+    ql = Algorithms::QLearningAlg(solution);
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
     cout << "ELAPSED TIME: " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << " miliseconds"  <<endl;
     if(!solution) throw invalid_argument( "SOLUTION WAS NOT FOUND" );
@@ -62,9 +62,10 @@ void Controller::solve(){
 }
 
 void Controller::printOptimalSolution(){
+    
     vector<State*> moves;
     moves.push_back(solution);
-      
+    /*
     while(!solution->isInitialState()){
         solution = solution->parent;
         moves.push_back(solution);
@@ -73,6 +74,14 @@ void Controller::printOptimalSolution(){
     for (int i = moves.size()-1; i >= 0; i--){
         do{cout<<"\nPress enter to see next move\n"<<endl;} while (cin.get() != '\n');
         moves[i]->printGrid();
+    }*/
+    while(!solution->isGoal()){
+        solution = ql->takeSuboptimalAction(solution);
+        moves.push_back(solution);
+    }
+    for (State* s: moves){
+        do{cout<<"\nPress enter to see next move\n"<<endl;} while (cin.get() != '\n');
+        s->printGrid();
     }
 }
 

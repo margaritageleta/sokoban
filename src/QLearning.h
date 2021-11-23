@@ -17,11 +17,12 @@ class QLearning{
     State* initialState;
     QLearning(State* initialState, double alpha, double gamma, double epsilon);
     double getReward(State* state, Action* action);
-    Action* getAction(State* state, double epsilon);
     State* takeAction(State* state);
-    bool executeEpisode(State* initialState);
-    void train(int nEpisode);
+    bool executeEpisode(State* initialState, int nMaxMoves);
+    void train();
+    State* takeSuboptimalAction(State* state);
     private:
+    Action* getAction(State* state, double epsilon);
     vector<Action*> getValidActions(State* state);
     Action* chooseActionWithPolicy(State* state, vector<Action*> actions);
     double getNextMaxQ(State* nextState);

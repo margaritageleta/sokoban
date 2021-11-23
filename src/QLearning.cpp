@@ -13,8 +13,9 @@ double QLearning::getReward(State* state, Action* action){
     State* nextState =  action->getState(state);
     if((! nextState->equals(state)) && (! nextState->isAnyBoxInDeadlock())){
         if (nextState->isGoal()) return 100.0;
-        if (Heuristic::getValue(state,2,1) > Heuristic::getValue(nextState,2,1)) return 1.0;
+        //if (Heuristic::getValue(state,2,1) > Heuristic::getValue(nextState,2,1)) return 1.0;
         if (Heuristic::getNBoxes(state) > Heuristic::getNBoxes(nextState)) return 2.0;
+        if(state->movedBox) return 1.0;
         return 0.0;
     }
     return -1.0;
@@ -56,7 +57,7 @@ Action* QLearning::getAction(State* state, double epsilon){
 }
 
 State* QLearning::takeAction(State* state){
-    Action* action = getAction(state, epsilon);
+    Action* action = getAction(state,epsilon);
     double reward = getReward(state, action);
     
     State* nextState = action->getState(state);
@@ -70,7 +71,14 @@ State* QLearning::takeAction(State* state){
     if (qtable[id] > normalizer) normalizer = qtable[id];
     
     return nextState;
+}
 
+State* QLearning::takeSuboptimalAction(State* state){
+    
+    Action* action = getAction(state, 0);
+    State* nextState = action->getState(state);
+    
+    return nextState;
 }
 
 double QLearning::getNextMaxQ(State* nextState){
@@ -86,17 +94,20 @@ double QLearning::getNextMaxQ(State* nextState){
     return maxQ;
 }
 
-bool QLearning::executeEpisode(State* initialState){
+bool QLearning::executeEpisode(State* initialState, int nMaxMoves){
     State* currentState = initialState;
-    chrono::steady_clock::time_point begin = chrono::steady_clock::now();
+    //currentState->movePlayerToRandomPos();
+    int moves = 0;
+    
     while(true){
         currentState = takeAction(currentState);
         if (currentState->isGoal()) return true;
-        chrono::steady_clock::time_point now= chrono::steady_clock::now();
-        if (chrono::duration_cast<chrono::milliseconds>(now - begin).count()>=100){
+        if (moves == nMaxMoves){
             //currentState->printGrid();
             return false;
         }
+        moves ++;
+        
     }
     return false;
 }
@@ -109,13 +120,13 @@ void QLearning::normalizeQ(){
     qtable = qtable2;
 }
 
-void QLearning::train(int nEpisodes){
+void QLearning::train(){
     bool found = false;
-    for(int i=0;i<nEpisodes;i++){
-        cout << "RUNNING EPISODE " << i << endl;
-        found = executeEpisode(initialState);
-        cout << "SOLUTION FOUND " << found << endl;
-        if (nEpisodes % 10 == 0) normalizeQ();
+    int timesFound = 0;
+    while(true){
+        found = executeEpisode(initialState, 1000);
+        if (timesFound > 50) break;
+        if (found) timesFound++;
     }
 }
 
