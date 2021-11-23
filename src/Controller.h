@@ -11,6 +11,7 @@
 #include "State.h"
 #include "Algorithms.h"
 
+
 using namespace std;
 
 typedef pair<int, int> coord2D;

@@ -34,3 +34,10 @@ State* Algorithms::AStar(State* state){
     return nullptr;
 
 }
+
+State* Algorithms::QLearningAlg(State* state){
+    QLearning* ql = new QLearning(state, 1.0, 0.6, 0.6);
+    ql->train(1000);
+    return nullptr;
+}
+

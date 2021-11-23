@@ -53,12 +53,13 @@ void Controller::prune(){
 void Controller::solve(){
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
     solution = new State(grid);
-    solution = Algorithms::AStar(solution);
+    //solution = Algorithms::AStar(solution);
+    solution = Algorithms::QLearningAlg(solution);
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
     cout << "ELAPSED TIME: " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << " miliseconds"  <<endl;
     if(!solution) throw invalid_argument( "SOLUTION WAS NOT FOUND" );
     cout << "SOLUTION FOUND" << endl;
-    }
+}
 
 void Controller::printOptimalSolution(){
     vector<State*> moves;

@@ -20,7 +20,7 @@ class State: public Grid{
     State(State* s1);
     void setParent(State* parent);
 
-    string getId();
+    virtual string getId();
 
     int getH();
 

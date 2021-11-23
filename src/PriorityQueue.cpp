@@ -9,7 +9,7 @@ void PriorityQueue::push(State* state){
 State* PriorityQueue::pop(){
     State* s = pq.top();
     pq.pop();
-    lazyRemoval(s);
+    //lazyRemoval(s);
     return s;
 }
 

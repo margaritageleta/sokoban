@@ -46,9 +46,19 @@ class Grid {
 
         bool isCorner(coord2D coord);
 
+        bool isCorner(int i, int j);
+
+        bool isCornerNotStg(int i, int j);
+
         bool isAnyBoxInFreeCorner();
 
+        bool isAnyBoxInDeadlock();
+
         bool isBoxInFreeCorner(coord2D coord);
+
+        bool isBoxBetweenCorners(coord2D coord);
+
+        bool isBoxInDeadlock(coord2D coord);
 
         bool isBoxInStorage(coord2D coord);
 

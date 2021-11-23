@@ -10,7 +10,8 @@ typedef pair<int, int> coord2D;
 class State;
 class Heuristic { 
     public: 
-        static double getValue(State* state, const int p);
+        static double getValue(State* state, const int p, double W);
+        static int getNBoxes(State* state);
     private: 
         static double computeMinkowskiDistance(coord2D x1, coord2D x2, const int p);
 };

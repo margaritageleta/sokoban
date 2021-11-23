@@ -8,6 +8,8 @@
 using namespace std;
 typedef pair<int, int> coord2D;
 
+enum Move{ UP=0, DOWN=1, RIGHT=2, LEFT=3, Last};
+
 class Action{
     private:
     static State* getState(State* state, coord2D (*move)(coord2D coord));
@@ -18,7 +20,12 @@ class Action{
     public:
     static vector<State*> getNextStates(State* state);
     
-    
+    coord2D (*action)(coord2D coord);
+    Move move;
+    Action(Move move);
+    string getId();
+    State* getState(State* state);
+        
 };
 
 #endif

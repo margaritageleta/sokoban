@@ -45,3 +45,27 @@ coord2D Action::moveUp(coord2D coord){
 coord2D Action::moveDown(coord2D coord){
     return make_pair(coord.first + 1,coord.second);
 }
+
+Action::Action(Move move){
+    this->move = move;
+    switch(move){
+        case UP: this->action = moveUp; break;
+        case DOWN: this->action = moveDown; break;
+        case RIGHT: this->action = moveRight; break;
+        case LEFT: this->action = moveLeft; break;
+    }
+}
+
+string Action::getId(){
+    switch(this->move){
+        case UP: return "U";
+        case DOWN: return "D";
+        case RIGHT: return "R";
+        case LEFT: return "L";
+    }
+}
+
+State* Action::getState(State * state){
+    State* nextMove = new State(state);
+    return Action::getState(nextMove,this->action);
+}

@@ -23,7 +23,7 @@ State::State(State* s1):Grid(s1){
 }
 
 int State::getH(){
-    return Heuristic::getValue(this, 2);
+    return Heuristic::getValue(this, 2,200);
 }
 
 int State::getCost(){

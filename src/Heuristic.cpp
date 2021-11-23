@@ -7,7 +7,7 @@ double Heuristic::computeMinkowskiDistance(coord2D x1, coord2D x2, const int p) 
     return pow(pow(abs(x1.first - x2.first), p) + pow(abs(x1.second - x2.second), p), 1/p);
 }
 
-double Heuristic::getValue(State* state, const int p) {
+double Heuristic::getValue(State* state, const int p, double W) {
 
     double smallestDist2Box = double(numeric_limits<int>::max());
     double totalDistBoxStorage = 0.0;
@@ -27,7 +27,20 @@ double Heuristic::getValue(State* state, const int p) {
         totalDistBoxStorage /= nStorage;
     }
     if (double(numeric_limits<int>::max()) == smallestDist2Box) smallestDist2Box = 0;
-    return 200*(smallestDist2Box + totalDistBoxStorage);
+    return W*(smallestDist2Box + totalDistBoxStorage);
 
 }
+
+int Heuristic::getNBoxes(State* state) {
+    
+    int nBoxes = 0;
+    for (auto & box : state->nBoxes) { 
+        if (state->isBoxInStorage(box)) continue;
+        nBoxes++;
+    }
+    return  nBoxes;
+
+}
+
+
 

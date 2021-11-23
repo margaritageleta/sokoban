@@ -1,4 +1,3 @@
-
 #include "Grid.h"
 
 using namespace std;
@@ -98,7 +97,17 @@ bool Grid::isCorner(coord2D coord) { //no tenemos en cuenta esquinas formadas po
     int j = coord.second;
     bool a = (isWall(i-1,j) && (isWall(i,j-1) || isWall(i,j+1)));
     bool b = (isWall(i+1,j) && (isWall(i,j-1) || isWall(i,j+1)));
-    return a || b;
+    return (a || b);
+}
+
+bool Grid::isCorner(int i, int j) { //no tenemos en cuenta esquinas formadas por otras cajas!
+    bool a = (isWall(i-1,j) && (isWall(i,j-1) || isWall(i,j+1)));
+    bool b = (isWall(i+1,j) && (isWall(i,j-1) || isWall(i,j+1)));
+    return (a || b);
+}
+
+bool Grid::isCornerNotStg(int i, int j) { //no tenemos en cuenta esquinas formadas por otras cajas!
+    return isCorner(i,j) && (tile["STG"] != grid[i][j]);
 }
 
 bool Grid::isAnyBoxInFreeCorner(){
@@ -106,6 +115,17 @@ bool Grid::isAnyBoxInFreeCorner(){
         if(isBoxInFreeCorner(coord)) return true;
     }
     return false;
+}
+
+bool Grid::isAnyBoxInDeadlock(){
+    for (coord2D coord : nBoxes){
+        if(isBoxInDeadlock(coord)) return true;
+    }
+    return false;
+}
+
+bool Grid::isBoxInDeadlock(coord2D coord) {
+    return isBoxInFreeCorner(coord);// || isBoxBetweenCorners(coord);
 }
 
 
@@ -116,6 +136,17 @@ bool Grid::isBoxInFreeCorner(coord2D coord) {
     if (grid[i][j] == tile["BOXNSTG"]) return false;
     
     return isCorner(coord);
+}
+
+bool Grid::isBoxBetweenCorners(coord2D coord) {
+    if (!isBox(coord)) return false;
+    int i = coord.first;
+    int j = coord.second;
+    bool a = isWall(i+1,j) && isCornerNotStg(i,j-1) && isCornerNotStg(i,j+1);
+    bool b = isWall(i-1,j) && isCornerNotStg(i,j-1) && isCornerNotStg(i,j+1);
+    bool c = isWall(i,j-1) && isCornerNotStg(i-1,j) && isCornerNotStg(i+1,j);
+    bool d = isWall(i,j+1) && isCornerNotStg(i-1,j) && isCornerNotStg(i+1,j);
+    return a || b || c || d;
 }
 
 bool Grid::isBoxInStorage(coord2D coord){
