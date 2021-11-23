@@ -49,8 +49,6 @@ class Grid {
 
         bool isCorner(int i, int j);
 
-        bool isCornerNotStg(int i, int j);
-
         bool isAnyBoxInFreeCorner();
 
         bool isAnyBoxInDeadlock();
@@ -70,6 +68,14 @@ class Grid {
         void moveBox(coord2D from, coord2D to);
 
         void movePlayer(coord2D from, coord2D to);
+
+        bool checkHorizontalDeadlock(int i,int j,int s);
+
+        bool checkHorizontalDeadlock(int i,int j,int s, int o);
+
+        bool checkVerticalDeadlock(int i,int j,int s);
+
+        bool checkVerticalDeadlock(int i,int j,int s, int o);
 
 };
 

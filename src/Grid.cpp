@@ -107,10 +107,6 @@ bool Grid::isCorner(int i, int j) { //no tenemos en cuenta esquinas formadas por
     return (a || b);
 }
 
-bool Grid::isCornerNotStg(int i, int j) { //no tenemos en cuenta esquinas formadas por otras cajas!
-    return isCorner(i,j) && (tile["STG"] != grid[i][j]);
-}
-
 bool Grid::isAnyBoxInFreeCorner(){
     for (coord2D coord : nBoxes){
         if(isBoxInFreeCorner(coord)) return true;
@@ -126,7 +122,7 @@ bool Grid::isAnyBoxInDeadlock(){
 }
 
 bool Grid::isBoxInDeadlock(coord2D coord) {
-    return isBoxInFreeCorner(coord);// || isBoxBetweenCorners(coord);
+    return isBoxInFreeCorner(coord)|| isBoxBetweenCorners(coord);
 }
 
 
@@ -141,14 +137,53 @@ bool Grid::isBoxInFreeCorner(coord2D coord) {
 
 bool Grid::isBoxBetweenCorners(coord2D coord) {
     if (!isBox(coord)) return false;
-    int i = coord.first;
-    int j = coord.second;
-    bool a = isWall(i+1,j) && isCornerNotStg(i,j-1) && isCornerNotStg(i,j+1);
-    bool b = isWall(i-1,j) && isCornerNotStg(i,j-1) && isCornerNotStg(i,j+1);
-    bool c = isWall(i,j-1) && isCornerNotStg(i-1,j) && isCornerNotStg(i+1,j);
-    bool d = isWall(i,j+1) && isCornerNotStg(i-1,j) && isCornerNotStg(i+1,j);
-    return a || b || c || d;
+    vector <int> variations = {-1,1};
+    bool isDeadlock = false;
+    int i = coord.first; int j=coord.second;
+    for(int s: variations){
+        if(isWall(i+s,j)){
+            if(checkHorizontalDeadlock(i,j,s)) return true;
+        }
+        if(isWall(i,j+s)){
+            if(checkVerticalDeadlock(i,j,s)) return true;
+        }
+    }
+    return false;
 }
+
+bool Grid::checkHorizontalDeadlock(int i,int j,int s){
+    return checkHorizontalDeadlock(i,j,s,-1) && checkHorizontalDeadlock(i,j,s, 1);
+}
+bool Grid::checkHorizontalDeadlock(int i,int j,int s, int o){
+    j = j+o;
+    while ((j < sizeH && o==1) || (j >= 0 && o==-1)){
+        if(grid[i][j] == tile["STG"]) return false;
+        else if(isCorner(i,j)) return true;
+        else if(isWall(i+s,j)){
+            j = j+o;
+            continue;
+        }
+        return false;
+    }
+}
+
+bool Grid::checkVerticalDeadlock(int i,int j,int s){
+    return checkVerticalDeadlock(i,j,s,-1) && checkVerticalDeadlock(i,j,s,1);
+}
+bool Grid::checkVerticalDeadlock(int i,int j,int s, int o){
+    i = i+o;
+    while ((i < sizeV && o==1) || (i >= 0 && o==-1)){
+        if(grid[i][j] == tile["STG"]) return false;
+        else if(isCorner(i,j)) return true;
+        else if(isWall(i,j+s)){
+            i= i+o;
+            continue;
+        }
+        return false;
+    }
+}
+
+
 
 bool Grid::isBoxInStorage(coord2D coord){
     if (!isBox(coord)) return false;
