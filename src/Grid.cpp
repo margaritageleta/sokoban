@@ -4,7 +4,8 @@ using namespace std;
 
 typedef pair<int, int> coord2D;
 typedef vector<vector<int>> matrix;
-map<string, int> tile = {
+
+map<string, int> Grid::tile = {
     {"WALL", -1},
     {"VOID", 0},
     {"NEW_WALL", 1},
@@ -173,6 +174,7 @@ void Grid::moveBox(coord2D from, coord2D to){
             break;
         } 
     }
+    movedBox = true;
     
     if (grid[from.first][from.second] == tile["BOXNSTG"]) grid[from.first][from.second] = tile["STORAGE"];
     else grid[from.first][from.second] = tile["VOID"];
@@ -190,5 +192,3 @@ void Grid::movePlayer(coord2D from, coord2D to){
     if (grid[to.first][to.second] == tile["STORAGE"]) grid[to.first][to.second] = tile["PLAYERNSTG"];
     else grid[to.first][to.second] = tile["PLAYER"];
 }
-
-

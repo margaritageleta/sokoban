@@ -13,7 +13,6 @@ double QLearning::getReward(State* state, Action* action){
     State* nextState =  action->getState(state);
     if((! nextState->equals(state)) && (! nextState->isAnyBoxInDeadlock())){
         if (nextState->isGoal()) return 100.0;
-        //if (Heuristic::getValue(state,2,1) > Heuristic::getValue(nextState,2,1)) return 1.0;
         if (Heuristic::getNBoxes(state) > Heuristic::getNBoxes(nextState)) return 2.0;
         if(state->movedBox) return 1.0;
         return 0.0;
@@ -51,8 +50,11 @@ Action* QLearning::chooseActionWithPolicy(State* state, vector<Action*> actions)
 
 Action* QLearning::getAction(State* state, double epsilon){
     vector<Action*> validActions = getValidActions(state);
-    double probablity = rand() / double(RAND_MAX);
-    if (probablity < epsilon) return validActions[rand() % validActions.size()];
+    double probablity = Random::getProbablity(); 
+    if (probablity < epsilon){
+        int index = Random::getBetweenRange(0,validActions.size()-1);
+        return validActions[index];
+    }
     else return chooseActionWithPolicy(state, validActions);
 }
 
@@ -96,9 +98,7 @@ double QLearning::getNextMaxQ(State* nextState){
 
 bool QLearning::executeEpisode(State* initialState, int nMaxMoves){
     State* currentState = initialState;
-    //currentState->movePlayerToRandomPos();
-    int moves = 0;
-    
+    int moves = 0; 
     while(true){
         currentState = takeAction(currentState);
         if (currentState->isGoal()) return true;

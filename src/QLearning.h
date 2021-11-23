@@ -7,6 +7,7 @@
 #include "State.h"
 #include "Heuristic.h"
 #include <chrono>
+#include "Random.h"
 
 using namespace std;
 

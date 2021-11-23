@@ -16,11 +16,12 @@ typedef vector<vector<int>> matrix;
 
 class Grid {
     public:
+        static map<string, int> tile;
         matrix grid;
         vector <coord2D> nWallSquares, nBoxes, nStorageLocations;
         coord2D player;
         int sizeH, sizeV;
-
+        bool movedBox = false;
         Grid(int sizeH, int sizeV);
         Grid(Grid* g1);
         Grid() = default;
