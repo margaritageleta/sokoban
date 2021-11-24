@@ -66,7 +66,8 @@ string Action::getId(){
     }
 }
 
-State* Action::getState(State * state){
+State* Action::getState(State* state){
     State* nextMove = new State(state);
-    return Action::getState(nextMove,this->action);
+    nextMove = Action::getState(nextMove,this->action);
+    return nextMove;
 }

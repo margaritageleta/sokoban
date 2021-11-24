@@ -2,20 +2,23 @@
 
 initializer_list<Move> allMoves = { UP, DOWN, RIGHT, LEFT};
 
-QLearning::QLearning(State* initialState, double alpha, double gamma, double epsilon){
+QLearning::QLearning(State* initialState, double alpha, double gamma, double epsilon, double decayFactor){
     this->initialState = initialState;
     this->alpha = alpha;
     this->gamma = gamma;
     this->epsilon = epsilon;
+    this->decayFactor;
 }
 
 double QLearning::getReward(State* state, Action* action){
     State* nextState =  action->getState(state);
-    if((! nextState->equals(state)) && (! nextState->isAnyBoxInDeadlock())){
+    if((!nextState->equals(state))){
+        if(nextState->isAnyBoxInDeadlock()) return 0.0;
         if (nextState->isGoal()) return 100.0;
-        if (Heuristic::getNBoxes(state) > Heuristic::getNBoxes(nextState)) return 2.0;
-        if(state->movedBox) return 1.0;
-        return 0.0;
+        //if (Heuristic::getNBoxes(state) > Heuristic::getNBoxes(nextState)) return 20.0;
+        //if(state->movedBox) return 10.0;
+        if (Heuristic::getValue(state,2,1) > Heuristic::getValue(nextState,2,1)) return 10.0;
+        return 1.0;
     }
     return -1.0;
 }
@@ -48,18 +51,19 @@ Action* QLearning::chooseActionWithPolicy(State* state, vector<Action*> actions)
     return next;
 }
 
-Action* QLearning::getAction(State* state, double epsilon){
+Action* QLearning::getAction(State* state, double epsilon, double decayFactor){
     vector<Action*> validActions = getValidActions(state);
-    double probablity = Random::getProbablity(); 
-    if (probablity < epsilon){
+    double probablity = Random::getProbablity();
+    double greedy = epsilon * pow(decayFactor, epoch); 
+    if (probablity < greedy){
         int index = Random::getBetweenRange(0,validActions.size()-1);
         return validActions[index];
     }
-    else return chooseActionWithPolicy(state, validActions);
+    return chooseActionWithPolicy(state, validActions);
 }
 
 State* QLearning::takeAction(State* state){
-    Action* action = getAction(state,epsilon);
+    Action* action = getAction(state,epsilon,decayFactor);
     double reward = getReward(state, action);
     
     State* nextState = action->getState(state);
@@ -67,8 +71,10 @@ State* QLearning::takeAction(State* state){
     
     QState* qstate = new QState(state,action);
     string id = qstate->getId();
-    
-    qtable[id] = qtable[id] + alpha * (reward + epsilon * nextMaxQ - qtable[id]);
+    /*if(visited.count(id) == 0) visited[id] = 1;
+    else visited[id] = visited[id] + 1;
+    */
+    qtable[id] = qtable[id] + alpha * (reward + gamma * nextMaxQ - qtable[id]);
     
     if (qtable[id] > normalizer) normalizer = qtable[id];
     
@@ -77,7 +83,7 @@ State* QLearning::takeAction(State* state){
 
 State* QLearning::takeSuboptimalAction(State* state){
     
-    Action* action = getAction(state, 0);
+    Action* action = getAction(state, 0, 1);
     State* nextState = action->getState(state);
     
     return nextState;
@@ -99,17 +105,14 @@ double QLearning::getNextMaxQ(State* nextState){
 bool QLearning::executeEpisode(State* initialState, int nMaxMoves){
     State* currentState = initialState;
     int moves = 0; 
-    while(true){
+    while((!currentState->isGoal()) && (moves < nMaxMoves)){
         currentState = takeAction(currentState);
-        if (currentState->isGoal()) return true;
-        if (moves == nMaxMoves){
-            //currentState->printGrid();
-            return false;
-        }
+        if (currentState->isAnyBoxInDeadlock()) break;
         moves ++;
-        
     }
-    return false;
+    //currentState->printGrid();
+
+    return currentState->isGoal();
 }
 
 void QLearning::normalizeQ(){
@@ -120,14 +123,24 @@ void QLearning::normalizeQ(){
     qtable = qtable2;
 }
 
-void QLearning::train(){
+void QLearning::train(int nEpochs, int nMaxSteps){
     bool found = false;
-    int timesFound = 0;
-    while(true){
-        found = executeEpisode(initialState, 1000);
-        if (timesFound > 50) break;
-        if (found) timesFound++;
+    for (int i = 0; i < nEpochs; i++){
+        this->epoch = this->epoch+1;
+        found = executeEpisode(initialState, nMaxSteps);
+        if ((this->epoch % 100 == 0)) cout << "EPISODE " << this->epoch << endl;
     }
+}
+
+bool QLearning::thereIsASolution(int nMaxSteps){
+    State* currentStep = initialState;
+    int steps = 0;
+    while(!currentStep->isGoal()){
+        currentStep = takeSuboptimalAction(currentStep);
+        steps++;
+        if (steps > nMaxSteps) return false;
+    }
+    return true;
 }
 
 

@@ -14,20 +14,25 @@ using namespace std;
 class QLearning{
     public:
     map<string, double> qtable;
-    double alpha, gamma, epsilon, normalizer;
+    double alpha, gamma, epsilon, normalizer, decayFactor;
     State* initialState;
-    QLearning(State* initialState, double alpha, double gamma, double epsilon);
+    int epoch=0;
+    QLearning(State* initialState, double alpha, double gamma, double epsilon, double decayFactor);
     double getReward(State* state, Action* action);
     State* takeAction(State* state);
     bool executeEpisode(State* initialState, int nMaxMoves);
-    void train();
+    void train(int nEpochs, int nMaxSteps);
     State* takeSuboptimalAction(State* state);
+    bool thereIsASolution(int nMaxSteps);
     private:
-    Action* getAction(State* state, double epsilon);
+    map<string, double> visited;
+    Action* getAction(State* state, double epsilon, double decayFactor);
     vector<Action*> getValidActions(State* state);
     Action* chooseActionWithPolicy(State* state, vector<Action*> actions);
     double getNextMaxQ(State* nextState);
     void normalizeQ();
+    bool getSolutionSteps();
+    bool isLoop(State* state, Action* action);
     
     
 };

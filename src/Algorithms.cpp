@@ -36,8 +36,13 @@ State* Algorithms::AStar(State* state){
 }
 
 QLearning* Algorithms::QLearningAlg(State* state){
-    QLearning* ql = new QLearning(state, 1.0, 0.6, 0.7);
-    ql->train();
+    double alpha = 1.0; double gamma = 0.6; double epsilon = 1; double decayFactor = 0.999;
+    QLearning* ql = new QLearning(state, alpha, gamma, epsilon, decayFactor);
+    while(!ql->thereIsASolution(100)){
+        ql->train(1000,10000);
+        cout << "NO SOLUTION YET" << endl;
+    }
+    
     return ql;
 }
 
