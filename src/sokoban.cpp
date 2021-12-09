@@ -1,6 +1,19 @@
 #include <iostream>
 #include <string>
+
+#include "Grid.h"
+#include "State.h"
+#include "Action.h"
+#include "QLearning.h"
+#include "Algorithms.h"
 #include "Controller.h"
+#include "Heuristic.h"
+#include "PriorityQueue.h"
+#include "QStar.h"
+#include "QState.h"
+
+
+
 
 using namespace std;
 
@@ -14,6 +27,6 @@ int main (int argc, char** argv) {
       getline(cin,inputFile);
       controller->loadFile(inputFile);
    }
-   controller->solve();
-   controller->printOptimalSolution();
+   controller->solve("qstar");
+   controller->printSolution("qstar");
 }

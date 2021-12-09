@@ -14,9 +14,6 @@ string QState::getId(){
             }
         }
     }
-    /*for (coord2D & box : nBoxes){
-            id = id + to_string(box.first) + to_string(box.second);
-    }*/
     id = id + action->getId();
     return id;
 }

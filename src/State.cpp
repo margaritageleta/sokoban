@@ -55,6 +55,12 @@ bool State::isGoal(){
     return true;
 }
 
+bool State::isSubGoal(int currentBoxes){
+    if (this->isGoal()) return true;
+    if(!this->parent) return false;
+    return Heuristic::getNBoxes(this) < currentBoxes;
+}
+
 bool State::isInitialState(){
     return !parent;
 }

@@ -1,22 +1,20 @@
-#ifndef QLEARNING_H
-#define QLEARNING_H
+#ifndef QSTAR_H
+#define QSTAR_H
 
 #include <map>
-#include<string>
+#include <string>
 #include <chrono>
 #include <unordered_map>
 
-#include "Random.h"
 #include "Grid.h"
 #include "State.h"
 #include "Heuristic.h"
 #include "Action.h"
 #include "QState.h"
 
-
 using namespace std;
-class Action;
-class QLearning{
+
+class QStar{
     public:
     unordered_map<string, double> qtable;
     double alpha, gamma, epsilon, normalizer, decayFactor;
@@ -24,7 +22,7 @@ class QLearning{
     int epoch=0;
     Random random;
     int inactiveCounter = 0;
-    QLearning(State* initialState, double alpha, double gamma, double epsilon, double decayFactor);
+    QStar(State* initialState, double alpha, double gamma, double epsilon, double decayFactor);
     double getReward(State* state, Action* action);
     State* takeAction(State* state);
     bool executeEpisode(State* initialState, int nMaxMoves);

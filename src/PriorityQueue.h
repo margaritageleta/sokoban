@@ -1,8 +1,9 @@
 #ifndef PRIORITYQUEUE_H
 #define PRIORITYQUEUE_H
-#include <queue>
-#include "State.h"
 
+#include <queue>
+#include "Grid.h"
+#include "State.h"
 using namespace std;
 
 class PriorityQueue {

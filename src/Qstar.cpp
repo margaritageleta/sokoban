@@ -1,8 +1,8 @@
-#include "QLearning.h"
+#include "QStar.h"
 
-initializer_list<Move> allMoves = { UP, DOWN, RIGHT, LEFT};
+initializer_list<QSMove> allQSMoves = { QUP, QDOWN, QRIGHT, QLEFT, ASTAR};
 
-QLearning::QLearning(State* initialState, double alpha, double gamma, double epsilon, double decayFactor){
+QStar::QStar(State* initialState, double alpha, double gamma, double epsilon, double decayFactor){
     this->initialState = initialState;
     this->alpha = alpha;
     this->gamma = gamma;
@@ -11,23 +11,23 @@ QLearning::QLearning(State* initialState, double alpha, double gamma, double eps
     this->random = Random();
 }
 
-double QLearning::getReward(State* state, Action* action){
-    State* nextState =  action->getState(state);
+double QStar::getReward(State* state, Action* action){
+    State* nextState =  action->getQSState(state);
     if((!nextState->equals(state))){
-        if(nextState->isAnyBoxInDeadlock() || inactiveCounter > 100) return -10.0;
+        if(nextState->isAnyBoxInDeadlock()) return 0.0;
         if (nextState->isGoal()) return 100.0;
         if (Heuristic::getNBoxes(state) > Heuristic::getNBoxes(nextState)) return 20.0;
-        if(nextState->movedBox && state->movedBox) return 10.0;
+        //if(nextState->movedBox && state->movedBox) return 10.0;
         if(nextState->movedBox) return 5.0;
         //if (Heuristic::getValue(state,2,1) > Heuristic::getValue(nextState,2,1)) return 10.0; // this does not guarantee pushing a box
-        return 1.0;
+        return 0.0;
     }
     return -1.0;
 }
 
-vector<Action*> QLearning::getValidActions(State* state){
+vector<Action*> QStar::getValidActions(State* state){
     vector<Action*> validActions;
-    for (Move move: allMoves){
+    for (QSMove move: allQSMoves){
         Action* a = new Action(move);
         if (getReward(state,a) != -1.0) {
             validActions.push_back(a);
@@ -36,7 +36,7 @@ vector<Action*> QLearning::getValidActions(State* state){
     return validActions;
 }
 
-Action* QLearning::chooseActionWithPolicy(State* state, vector<Action*> actions){
+Action* QStar::chooseActionWithPolicy(State* state, vector<Action*> actions){
     double maxQ = -100000000;
     Action * next;
     for(Action* a: actions){
@@ -53,32 +53,29 @@ Action* QLearning::chooseActionWithPolicy(State* state, vector<Action*> actions)
     return next;
 }
 
-Action* QLearning::getAction(State* state, double epsilon, double decayFactor){
+Action* QStar::getAction(State* state, double epsilon, double decayFactor){
     vector<Action*> validActions = getValidActions(state);
     double probablity = random.getProbablity();
-    double greedy = epsilon * pow(decayFactor, epoch); 
+    double greedy = epsilon * pow(decayFactor, epoch);
     if (probablity < greedy){
         int index = random.getBetweenRange(0,validActions.size()-1);
         return validActions[index];
     }
+
     return chooseActionWithPolicy(state, validActions);
 }
 
-State* QLearning::takeAction(State* state){
+State* QStar::takeAction(State* state){
     Action* action = getAction(state,epsilon,decayFactor);
     double reward = getReward(state, action);
     
-    if (reward == 1.0) inactiveCounter++;
+    if (reward == 0.0) inactiveCounter++;
     else inactiveCounter = 0;
-    
-    State* nextState = action->getState(state);
+    State* nextState = action->getQSState(state);
     double nextMaxQ = getNextMaxQ(nextState);
     
     QState* qstate = new QState(state,action);
     string id = qstate->getId();
-    /*if(visited.count(id) == 0) visited[id] = 1;
-    else visited[id] = visited[id] + 1;
-    */
     qtable[id] = qtable[id] + alpha * (reward + gamma * nextMaxQ - qtable[id]);
     
     if (qtable[id] > normalizer) normalizer = qtable[id];
@@ -86,15 +83,14 @@ State* QLearning::takeAction(State* state){
     return nextState;
 }
 
-State* QLearning::takeSuboptimalAction(State* state){
-    
-    Action* action = getAction(state, 0, 1);
-    State* nextState = action->getState(state);
-    
+State* QStar::takeSuboptimalAction(State* state){
+    vector<Action*> validActions = getValidActions(state);
+    Action* action = chooseActionWithPolicy(state, validActions);
+    State* nextState = action->getQSState(state);
     return nextState;
 }
 
-double QLearning::getNextMaxQ(State* nextState){
+double QStar::getNextMaxQ(State* nextState){
     double maxQ = -1000000;
     for(Action* a: getValidActions(nextState)){
         QState* qs = new QState(nextState,a);
@@ -107,13 +103,13 @@ double QLearning::getNextMaxQ(State* nextState){
     return maxQ;
 }
 
-bool QLearning::executeEpisode(State* initialState, int nMaxMoves){
+bool QStar::executeEpisode(State* initialState, int nMaxMoves){
     State* currentState = initialState;
     int moves = 0; 
     inactiveCounter = 0;
     while((!currentState->isGoal()) && (moves < nMaxMoves)){
         currentState = takeAction(currentState);
-        if (currentState->isAnyBoxInDeadlock() or inactiveCounter > 150) {
+        if (currentState->isAnyBoxInDeadlock()) {
             break;
         }
         moves ++;
@@ -123,28 +119,29 @@ bool QLearning::executeEpisode(State* initialState, int nMaxMoves){
     return currentState->isGoal();
 }
 
-void QLearning::normalizeQ(){
+void QStar::normalizeQ(){
     for (pair<string,double> qpair: qtable){
         qtable[qpair.first] = qpair.second / normalizer;
     }
 }
 
-void QLearning::train(int nEpochs, int nMaxSteps){
+void QStar::train(int nEpochs, int nMaxSteps){
     bool found = false;
     for (int i = 0; i < nEpochs; i++){
         found = executeEpisode(initialState, nMaxSteps);
         if (found){
             this->epoch = this->epoch+1;
             cout << "EPISODE " << i << ": I WON" << endl;
+            if(thereIsASolution(100)) break;
         }
         if ((i % 100 == 0)){
             cout << "EPISODE " << i << endl;
         }
     }
-    normalizeQ();
+    //normalizeQ();
 }
 
-bool QLearning::thereIsASolution(int nMaxSteps){
+bool QStar::thereIsASolution(int nMaxSteps){
     State* currentStep = initialState;
     int steps = 0;
     while(!currentStep->isGoal()){

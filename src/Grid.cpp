@@ -86,6 +86,10 @@ bool Grid::isWall(int i, int j) {
     return (grid[i][j] == tile["WALL"]) || (grid[i][j] == tile["NEW_WALL"]);
 }
 
+bool Grid::isVoid(int i, int j) {
+    return (grid[i][j] == tile["VOID"]);
+}
+
 bool Grid::isWall(coord2D coord) {
     return (grid[coord.first][coord.second] == tile["WALL"]) || (grid[coord.first][coord.second] == tile["NEW_WALL"]);
 }
@@ -218,4 +222,9 @@ void Grid::movePlayer(coord2D from, coord2D to){
     
     if (grid[to.first][to.second] == tile["STORAGE"]) grid[to.first][to.second] = tile["PLAYERNSTG"];
     else grid[to.first][to.second] = tile["PLAYER"];
+}
+
+bool Grid::inTunnel(coord2D x){
+
+    return isVoid(x.first,x.second)&&(isWall(x.first - 1, x.second) && isWall(x.first + 1, x.second) && (isVoid(x.first, x.second+1) || isVoid(x.first, x.second-1))) || (isWall(x.first, x.second-1) && isWall(x.first, x.second+1) && (isVoid(x.first-1, x.second) || isVoid(x.first+1, x.second))) ;
 }

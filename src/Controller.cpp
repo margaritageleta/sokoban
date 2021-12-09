@@ -50,22 +50,41 @@ void Controller::prune(){
     grid->printGrid();
 }
 
-void Controller::solve(){
+void Controller::solve(string alg){
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
     solution = new State(grid);
-    //solution = Algorithms::AStar(solution);
-    ql = Algorithms::QLearningAlg(solution);
-    chrono::steady_clock::time_point end = chrono::steady_clock::now();
-    cout << "ELAPSED TIME: " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << " miliseconds"  <<endl;
-    if(!solution) throw invalid_argument( "SOLUTION WAS NOT FOUND" );
-    cout << "SOLUTION FOUND" << endl;
+    if (alg == "astar"){
+        solution = Algorithms::AStar(solution);
+        chrono::steady_clock::time_point end = chrono::steady_clock::now();
+        cout << "ELAPSED TIME: " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << " miliseconds"  <<endl;
+        if(!solution) throw invalid_argument( "SOLUTION WAS NOT FOUND" );
+        cout << "SOLUTION FOUND" << endl;
+    } else if(alg == "qstar"){
+        qs = Algorithms::QStarAlg(solution);
+        chrono::steady_clock::time_point end = chrono::steady_clock::now();
+        cout << "ELAPSED TIME: " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << " miliseconds"  <<endl;
+        if (!qs->thereIsASolution(100)) throw invalid_argument( "SOLUTION WAS NOT FOUND" );
+        cout << "SOLUTION FOUND" << endl;
+        
+    } else {
+        ql = Algorithms::QLearningAlg(solution);
+        chrono::steady_clock::time_point end = chrono::steady_clock::now();
+        cout << "ELAPSED TIME: " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << " miliseconds"  <<endl;
+        if (!ql->thereIsASolution(100)) throw invalid_argument( "SOLUTION WAS NOT FOUND" );
+        cout << "SOLUTION FOUND" << endl;
+    }
 }
 
-void Controller::printOptimalSolution(){
+void Controller::printSolution(string alg){
+    if ( alg == "astar") printAstarOptimalSolution();
+    else if (alg == "qstar")  printQStarSolution();
+    else printQlearningSolution();
+}
+
+void Controller::printAstarOptimalSolution(){
     
     vector<State*> moves;
     moves.push_back(solution);
-    /*
     while(!solution->isInitialState()){
         solution = solution->parent;
         moves.push_back(solution);
@@ -74,9 +93,29 @@ void Controller::printOptimalSolution(){
     for (int i = moves.size()-1; i >= 0; i--){
         do{cout<<"\nPress enter to see next move\n"<<endl;} while (cin.get() != '\n');
         moves[i]->printGrid();
-    }*/
+    }
+}
+
+void Controller::printQlearningSolution(){
+    
+    vector<State*> moves;
+    moves.push_back(solution);
     while(!solution->isGoal()){
         solution = ql->takeSuboptimalAction(solution);
+        moves.push_back(solution);
+    }
+    for (State* s: moves){
+        do{cout<<"\nPress enter to see next move\n"<<endl;} while (cin.get() != '\n');
+        s->printGrid();
+    }
+}
+
+void Controller::printQStarSolution(){
+    
+    vector<State*> moves;
+    moves.push_back(solution);
+    while(!solution->isGoal()){
+        solution = qs->takeSuboptimalAction(solution);
         moves.push_back(solution);
     }
     for (State* s: moves){

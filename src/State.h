@@ -1,9 +1,9 @@
 #ifndef STATE_H
 #define STATE_H
 
-#include "Heuristic.h"
-#include "Grid.h"
 #include "string"
+#include "Grid.h"
+#include "Heuristic.h"
 
 
 using namespace std;
@@ -28,7 +28,8 @@ class State: public Grid{
 
     bool equals(State* state);
 
-    bool isGoal(); 
+    bool isGoal();
+    bool isSubGoal(int currentBoxes);
 
     bool isInitialState();
 

@@ -1,9 +1,12 @@
 #ifndef HEURISTIC_H
 #define HEURISTIC_H
-#include "State.h"
+
 #include <math.h>
 #include <limits>
 #include <vector>
+
+#include "Grid.h"
+#include "State.h"
 
 using namespace std;
 typedef pair<int, int> coord2D;

@@ -43,6 +43,8 @@ class Grid {
         
         bool isWall(coord2D coord);
 
+        bool isVoid(int i, int j);
+
         bool isBox(coord2D coord);
 
         bool isCorner(coord2D coord);
@@ -76,6 +78,8 @@ class Grid {
         bool checkVerticalDeadlock(int i,int j,int s);
 
         bool checkVerticalDeadlock(int i,int j,int s, int o);
+
+        bool inTunnel(coord2D x);
 
 };
 

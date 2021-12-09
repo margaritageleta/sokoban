@@ -4,7 +4,10 @@ using namespace std;
 
 class Random{
     public:
-    static double getProbablity();
-    static int getBetweenRange(int from, int to);
+    mt19937 rng;
+    uniform_real_distribution<double> r;
+    Random();
+    double getProbablity();
+    int getBetweenRange(int from, int to);
 };
 

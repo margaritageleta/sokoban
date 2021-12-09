@@ -1,15 +1,16 @@
 #include "Random.h"
 
-double Random::getProbablity(){
+Random::Random(){
     random_device dev;
-    mt19937 rng(dev());
-    uniform_real_distribution<double> r(0,1);
-    return r(rng);
+    this->rng = mt19937(dev());
+    this->r = uniform_real_distribution<double>(0,1);
+}
+
+double Random::getProbablity(){
+    return this->r(this->rng);
 }
 
 int Random::getBetweenRange(int from, int to){
-    random_device dev;
-    mt19937 rng(dev());
     uniform_int_distribution<int> i(from,to);
-    return i(rng);
+    return i(this->rng);
 }
