@@ -33,7 +33,7 @@ void Controller::loadFile(string inputFile){
 
       grid->setPlayerPosition(getXY(iss));
 
-      grid->printGrid();
+      //grid->printGrid();
       loaded = true;
       }
 }
@@ -47,31 +47,28 @@ void Controller::prune(){
             }
         }
     }
-    grid->printGrid();
+    //grid->printGrid();
 }
 
-void Controller::solve(string alg){
+void Controller::solve(string alg,int W, double alpha,double gamma,double epsilon){
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
     solution = new State(grid);
+    solution->W = W;
     if (alg == "astar"){
-        solution = Algorithms::AStar(solution);
+        solution = Algorithms::AStar(solution,W);
         chrono::steady_clock::time_point end = chrono::steady_clock::now();
-        cout << "ELAPSED TIME: " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << " miliseconds"  <<endl;
         if(!solution) throw invalid_argument( "SOLUTION WAS NOT FOUND" );
-        cout << "SOLUTION FOUND" << endl;
+        cout << chrono::duration_cast<chrono::milliseconds>(end - begin).count() <<endl;
     } else if(alg == "qstar"){
-        qs = Algorithms::QStarAlg(solution);
+        qs = Algorithms::QStarAlg(solution,W, alpha,gamma,epsilon);
         chrono::steady_clock::time_point end = chrono::steady_clock::now();
-        cout << "ELAPSED TIME: " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << " miliseconds"  <<endl;
         if (!qs->thereIsASolution(100)) throw invalid_argument( "SOLUTION WAS NOT FOUND" );
-        cout << "SOLUTION FOUND" << endl;
-        
+        cout << chrono::duration_cast<chrono::milliseconds>(end - begin).count() <<endl;
     } else {
-        ql = Algorithms::QLearningAlg(solution);
+        ql = Algorithms::QLearningAlg(solution, alpha,gamma,epsilon);
         chrono::steady_clock::time_point end = chrono::steady_clock::now();
-        cout << "ELAPSED TIME: " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << " miliseconds"  <<endl;
         if (!ql->thereIsASolution(100)) throw invalid_argument( "SOLUTION WAS NOT FOUND" );
-        cout << "SOLUTION FOUND" << endl;
+        cout << chrono::duration_cast<chrono::milliseconds>(end - begin).count() <<endl;
     }
 }
 

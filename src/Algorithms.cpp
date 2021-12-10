@@ -1,9 +1,9 @@
 #include "Algorithms.h"
 
-State* Algorithms::AStar(State* state){
+State* Algorithms::AStar(State* state, int W){
 
     if (state->isGoal()) return state;
-    
+    state->W = W;
     PriorityQueue frontier = PriorityQueue();
     set<string> visited;
     frontier.push(state);
@@ -27,8 +27,9 @@ State* Algorithms::AStar(State* state){
 
 }
 
-State* Algorithms::AStarSubRoutine(State* state){
+State* Algorithms::AStarSubRoutine(State* state, int W){
     if (state->isGoal()) return state;
+    state->W = W;
     PriorityQueue frontier = PriorityQueue();
     set<string> visited;
 
@@ -40,7 +41,7 @@ State* Algorithms::AStarSubRoutine(State* state){
         visited.insert(currentState->getId());
         
         if (currentState->isSubGoal(currentBoxes)){
-            if (Algorithms::isGoodStep(currentState)) return currentState;
+            if (Algorithms::isGoodStep(currentState, W)) return currentState;
         }
         vector<State*> children = Action::getNextStates(currentState);
         for (int i=0; i<children.size();i++){
@@ -55,8 +56,9 @@ State* Algorithms::AStarSubRoutine(State* state){
     return nullptr;
 }
 
-bool Algorithms::isGoodStep(State* state){
+bool Algorithms::isGoodStep(State* state, int W){
     if (state->isGoal()) return true;
+    state->W = W;
     PriorityQueue frontier = PriorityQueue();
     set<string> visited;
 
@@ -83,12 +85,12 @@ bool Algorithms::isGoodStep(State* state){
     return false;
 }
 
-QLearning* Algorithms::QLearningAlg(State* state){
-    double alpha = 1.0; double gamma = 0.6; double epsilon = 0.9; double decayFactor = 0.999;
+QLearning* Algorithms::QLearningAlg(State* state, double alpha,double gamma,double epsilon){
+    double decayFactor = 0.999;
     QLearning* ql = new QLearning(state, alpha, gamma, epsilon, decayFactor);
     int iterations = 0;
     while(!ql->thereIsASolution(100) && iterations < 1000){
-        cout << "NO SOLUTION YET" << endl;
+        //cout << "NO SOLUTION YET" << endl;
         ql->train(1000,1000);
         iterations += 1;
     }
@@ -96,8 +98,8 @@ QLearning* Algorithms::QLearningAlg(State* state){
     return ql;
 }
 
-QStar* Algorithms::QStarAlg(State* state){
-    double alpha = 1.0; double gamma = 0.6; double epsilon = 0.9; double decayFactor = 0.999;
+QStar* Algorithms::QStarAlg(State* state, int W, double alpha,double gamma,double epsilon){
+    double decayFactor = 0.999;
     QStar* qs = new QStar(state, alpha, gamma, epsilon, decayFactor);
     int iterations = 0;
     bool solutionYet = false;
@@ -105,7 +107,7 @@ QStar* Algorithms::QStarAlg(State* state){
         qs->train(1000,1000);
         iterations += 1;
         solutionYet = qs->thereIsASolution(100);
-        if (!solutionYet) cout << "NO SOLUTION YET" << endl;
+        //if (!solutionYet) cout << "NO SOLUTION YET" << endl;
     }
     
     return qs;

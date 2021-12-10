@@ -12,7 +12,7 @@
 #include "QStar.h"
 #include "QState.h"
 
-
+#include <stdlib.h>
 
 
 using namespace std;
@@ -21,12 +21,16 @@ int main (int argc, char** argv) {
 
    Controller* controller = new Controller();
 
+   string inputFile = argv[1];
+   string algo = argv[2];
+   int W = atof(argv[3]);
+   double alpha = atof(argv[4]);
+   double gamma = atof(argv[5]);
+   double epsilon = atof(argv[6]);
+
    while (!controller->loaded){
-      cout << "Write a valid input file path: ";
-      string inputFile;
-      getline(cin,inputFile);
       controller->loadFile(inputFile);
    }
-   controller->solve("qstar");
-   controller->printSolution("qstar");
+   controller->solve(algo,W,alpha,gamma,epsilon);
+   //controller->printSolution(algo);
 }

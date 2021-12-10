@@ -55,7 +55,7 @@ State* Action::getState(State* state, Move m){
 
 State* Action::getQSState(State* state, QSMove m){
     if (m == ASTAR){
-        State* newState = Algorithms::AStarSubRoutine(state);
+        State* newState = Algorithms::AStarSubRoutine(state, state->W);
         if (!newState) return state;
         return newState;
     }else{

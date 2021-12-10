@@ -1,6 +1,7 @@
 #include "PriorityQueue.h"
 
-PriorityQueue::PriorityQueue(){}
+PriorityQueue::PriorityQueue(){
+}
 
 void PriorityQueue::push(State* state){
     pq.push(state);

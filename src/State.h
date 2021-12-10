@@ -14,6 +14,7 @@ class State: public Grid{
     int cost = 0;
     
     int G = 0;
+    int W;
 
     State(Grid* grid):Grid(grid){};
     State()=default;

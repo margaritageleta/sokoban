@@ -29,7 +29,7 @@ class Controller {
     bool loaded;
     Controller();
     void loadFile(string inputFile);
-    void solve(string alg);
+    void solve(string alg,int W, double alpha,double gamma,double epsilon);
     void printSolution(string alg);
     void printAstarOptimalSolution();
     void printQlearningSolution();

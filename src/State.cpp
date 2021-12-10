@@ -20,10 +20,11 @@ State::State(State* s1):Grid(s1){
     parent = s1->parent;
     cost = s1->cost;
     G = s1->G;
+    W = s1->W;
 }
 
 int State::getH(){
-    return Heuristic::getValue(this, 2,200);
+    return Heuristic::getValue(this, 2, this->W);
 }
 
 int State::getCost(){

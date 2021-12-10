@@ -17,13 +17,13 @@ double QStar::getReward(State* state, Action* action){
     string id = qstate->getId();
     if(visited.count(id) > 0) return -1.0;
     if((!nextState->equals(state))){
-        if(nextState->isAnyBoxInDeadlock()) return -10.0;
+        if(nextState->isAnyBoxInDeadlock()|| inactiveCounter > 20) return 1.0;
         if (nextState->isGoal()) return 100.0;
         if (Heuristic::getNBoxes(state) > Heuristic::getNBoxes(nextState)) return 20.0;
-        //if(nextState->movedBox && state->movedBox) return 10.0;
+        if(nextState->movedBox && state->movedBox) return 10.0;
         if(nextState->movedBox) return 5.0;
         //if (Heuristic::getValue(state,2,1) > Heuristic::getValue(nextState,2,1)) return 10.0; // this does not guarantee pushing a box
-        return -10.0;
+        return 1.0;
     }
     return -1.0;
 }
@@ -70,7 +70,10 @@ actR QStar::getAction(State* state, double epsilon, double decayFactor){
 State* QStar::takeAction(State* state){
     actR actionNreward = getAction(state,epsilon,decayFactor);
     Action* action = actionNreward.first;
+
     double reward = actionNreward.second;
+
+
     if (reward == 0.0) inactiveCounter++;
     else inactiveCounter = 0;
     State* nextState = action->getQSState(state);
@@ -118,7 +121,7 @@ bool QStar::executeEpisode(State* initialState, int nMaxMoves){
         State* nextState = takeAction(currentState);
         if (nextState->equals(currentState)) break;
         currentState = nextState;
-        if (currentState->isAnyBoxInDeadlock()) {
+        if (currentState->isAnyBoxInDeadlock() || inactiveCounter > 20) {
             break;
         }
         moves ++;
@@ -140,13 +143,13 @@ void QStar::train(int nEpochs, int nMaxSteps){
         found = executeEpisode(initialState, nMaxSteps);
         if (found){
             this->epoch = this->epoch+1;
-            cout << "EPISODE " << i << ": I WON" << endl;
+            //cout << "EPISODE " << i << ": I WON" << endl;
             this->consecutiveWins+=1;
         } else{
             consecutiveWins = 0;
         }
         if ((i % 100 == 0)){
-            cout << "EPISODE " << i << endl;
+            //cout << "EPISODE " << i << endl;
         }
         if (consecutiveWins > 5) break;
     }

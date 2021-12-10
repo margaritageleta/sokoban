@@ -14,7 +14,7 @@ QLearning::QLearning(State* initialState, double alpha, double gamma, double eps
 double QLearning::getReward(State* state, Action* action){
     State* nextState =  action->getState(state);
     if((!nextState->equals(state))){
-        if(nextState->isAnyBoxInDeadlock() || inactiveCounter > 100) return -10.0;
+        if(nextState->isAnyBoxInDeadlock() || inactiveCounter > 20) return 1.0;
         if (nextState->isGoal()) return 100.0;
         if (Heuristic::getNBoxes(state) > Heuristic::getNBoxes(nextState)) return 20.0;
         if(nextState->movedBox && state->movedBox) return 10.0;
@@ -113,7 +113,7 @@ bool QLearning::executeEpisode(State* initialState, int nMaxMoves){
     inactiveCounter = 0;
     while((!currentState->isGoal()) && (moves < nMaxMoves)){
         currentState = takeAction(currentState);
-        if (currentState->isAnyBoxInDeadlock() or inactiveCounter > 150) {
+        if (currentState->isAnyBoxInDeadlock() or inactiveCounter > 20) {
             break;
         }
         moves ++;
@@ -135,10 +135,10 @@ void QLearning::train(int nEpochs, int nMaxSteps){
         found = executeEpisode(initialState, nMaxSteps);
         if (found){
             this->epoch = this->epoch+1;
-            cout << "EPISODE " << i << ": I WON" << endl;
+            //cout << "EPISODE " << i << ": I WON" << endl;
         }
         if ((i % 100 == 0)){
-            cout << "EPISODE " << i << endl;
+            //cout << "EPISODE " << i << endl;
         }
     }
     normalizeQ();
