@@ -17,8 +17,8 @@ if [[ -z $parameter ]]; then echo "Choose a hyperparameter to test."; exit 1; fi
 
 # Sokoban default settings
 filenum=01
-inputfile=./files/sokoban$filenum.txt 
-outputfile=./outputs/benchmarks_$algorithm\_$parameter.txt$
+inputfile=./benchmarks/sokoban$filenum.txt 
+outputfile=./outputs/benchmarks_file_$filenum\_$algorithm\_$parameter.txt$
 detourindex=200
 alpha=0.5 
 gamma=0.6
