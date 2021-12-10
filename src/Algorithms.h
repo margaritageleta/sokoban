@@ -26,6 +26,7 @@ class Algorithms{
     static QStar* QStarAlg(State* state);
     static State* AStarSubRoutine(State* state);
     static State* QLearningAstar(State* state);
+    static bool isGoodStep(State* state);
 };
 
 #endif

@@ -1,10 +1,10 @@
 #ifndef QSTAR_H
 #define QSTAR_H
 
-#include <map>
 #include <string>
 #include <chrono>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "Grid.h"
 #include "State.h"
@@ -13,13 +13,17 @@
 #include "QState.h"
 
 using namespace std;
+typedef pair<Action*, double> actR;
 
 class QStar{
     public:
     unordered_map<string, double> qtable;
+    unordered_set<string> visited;
+    vector <actR> validActions; 
     double alpha, gamma, epsilon, normalizer, decayFactor;
     State* initialState;
     int epoch=0;
+    int consecutiveWins = 0;
     Random random;
     int inactiveCounter = 0;
     QStar(State* initialState, double alpha, double gamma, double epsilon, double decayFactor);
@@ -30,10 +34,9 @@ class QStar{
     State* takeSuboptimalAction(State* state);
     bool thereIsASolution(int nMaxSteps);
     private:
-    map<string, double> visited;
-    Action* getAction(State* state, double epsilon, double decayFactor);
-    vector<Action*> getValidActions(State* state);
-    Action* chooseActionWithPolicy(State* state, vector<Action*> actions);
+    actR getAction(State* state, double epsilon, double decayFactor);
+    void getValidActionsAndRewards(State* state);
+    actR chooseActionWithPolicy(State* state);
     double getNextMaxQ(State* nextState);
     void normalizeQ();
     bool getSolutionSteps();
